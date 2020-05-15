@@ -1,5 +1,5 @@
 // d3 promise for json
-promise = d3.json('data/samples.json')
+var promise = d3.json('data/samples.json')
 
 //create an array of all subject IDs 
 promise.then(data => {
@@ -14,33 +14,36 @@ promise.then(data => {
 
 
 function otu_plot () {
-    d3.json('data/samples.json').then(data => {
+   promise.then(data => {
     
     // extract the otu_ids array from the json
-    var idArr = data.samples.map(row => row.otu_ids);
-    console.log("this is idArr : ", idArr);
+    console.log("this is samples :: ", data.samples);
+    var subjArr = data.samples.filter(row => row.id == 940);
+    console.log("this is subjArr :: ", subjArr);
+    // console.log("this is idArr : ", subjArr);
 
-    var valArr = data.samples.map(row => row.sample_values);
-        valArr = valArr.flat(1)
-        console.log("this is valArr : ", valArr);
+    // var valArr = data.samples.map(row => row.sample_values);
+    //     valArr = valArr.flat(1)
+    //     console.log("this is valArr : ", valArr);
 
-    var text = data.samples.otu_labels;
-
-
-    var trace1 = {
-      type: "bar",
-      x: idArr,
-      y: valArr,
-    //   text: text
-    };
+    // var text = data.samples.otu_labels;
 
 
-    var data = [trace1];
+    // var trace1 = {
+    //   type: "bar",
+    //   x: idArr,
+    //   y: valArr,
+    // //   text: text
+    // };
 
-    var layout = {
-      title: "Sample Analysis"
-      };    
 
-    Plotly.newPlot("bar", data, layout);
+    // var data = [trace1];
+
+    // var layout = {
+    //   title: "Sample Analysis"
+    //   };    
+
+    // Plotly.newPlot("bar", data, layout);
   });
 }
+otu_plot()
