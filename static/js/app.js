@@ -38,14 +38,16 @@ function otu_plot () {
 
     console.log("the data set selected is :: ", dataset);
 
-    promise.then(data => {
-    
-    // extract the otu_ids array from the json
-    console.log("this is samples :: ", data.samples);
-    var subjArr = data.samples.filter(row => row.id == 940);
-    console.log("this is subjArr :: ", subjArr[0].otu_ids);
-    // console.log("this is idArr : ", subjArr);
+    promise.then(data => {    
+        // extract the otu_ids array from the json
+        console.log("this is samples :: ", data.samples);
+        var subjArr = data.samples.filter(row => row.id == 940);
+        console.log("this is subjArr :: ", subjArr[0].otu_ids);
+        console.log("this is idArr : ", subjArr);
+    });
 
+
+   
     // var valArr = data.samples.map(row => row.sample_values);
     //     valArr = valArr.flat(1)
     //     console.log("this is valArr : ", valArr);
@@ -68,11 +70,10 @@ function otu_plot () {
     //   };    
 
     // Plotly.newPlot("bar", data, layout);
-  });
 }
+
 
 x = promise.then(data => {
     var otuID = data.samples[0].otu_ids;
     console.log("this is otuID", otuID);
-})
-
+    return otuID;})
