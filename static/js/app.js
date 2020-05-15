@@ -1,30 +1,42 @@
 var id;
-var value;
+var valArr;
 var text;
 
-d3.json('data/samples.json').then(function(data) {
-    // console.log(data);
-    var name = data.name;
-    var id = data.samples.map(row => row.otu_ids);
-    console.log(id)
-    var value = data.samples.sample_values;
+d3.json('data/samples.json').then(data => {
+    
+    // extract the otu_ids array from the json
+    var idArr = data.samples.map(row => row.otu_ids);
+        // combine sub-arrays into one array (flatten)
+        // Opt 1:  use concat
+        // idArr = [].concat.apply([], idArr);
+        // Opt 2: use flat (may not work with IE, tested in Chrome-works well)
+        idArr = idArr.flat(1);
+        console.log("this is idArr : ", idArr);
+
+    var valArr = data.samples.map(row => row.sample_values);
+        valArr = valArr.flat(1)
+        console.log("this is valArr : ", valArr);
+
     var text = data.samples.otu_labels;
 
 
     var trace1 = {
       type: "bar",
-      x: id,
-      y: value,
-      text: text
+      x: idArr,
+      y: valArr,
+    //   text: text
     };
 
 
     var data = [trace1];
 
     var layout = {
-      title: "Belly Button"
+      title: "Sample Analysis"
       };    
 
     Plotly.newPlot("bar", data, layout);
   });
 
+
+ 
+  
