@@ -1,9 +1,17 @@
-//create an array of all subject IDs 
-var subjID = d3.json('data/samples.json').then(data => 
-    data.samples.map(row => row.id));
+// d3 promise for json
+promise = d3.json('data/samples.json')
 
-// add subject IDs to drop down usind D3 select and data binding 
-<option value="dataset1">DataSet1</option>    
+//create an array of all subject IDs 
+promise.then(data => {
+    subjID = data.samples.map(row => row.id);
+    console.log("this is subID", subjID);
+    d3.select("select").selectAll("option")
+    .data(subjID)
+    .enter() // creates placeholder for new data
+    .append("option") // appends a option to placeholder
+    .text(function (idNum) {return idNum});
+    });
+
 
 function otu_plot () {
     d3.json('data/samples.json').then(data => {
