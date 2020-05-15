@@ -1,9 +1,9 @@
 // d3 promise for json
-var promise = d3.json('data/samples.json')
+const promise = d3.json('data/samples.json')
 
 //create an array of all subject IDs 
 promise.then(data => {
-    subjID = data.samples.map(row => row.id);
+    subjID = data.names;
     console.log("this is subID", subjID);
     d3.select("select").selectAll("option")
     .data(subjID)
@@ -13,13 +13,37 @@ promise.then(data => {
     });
 
 
+
+
+
+
+// function init() {
+//     // // page load error correction
+//     d3.selectAll("#selDataset").on("change", updatePlotly);
+    
+//     data = [{
+//       x: [1, 2, 3, 4, 5],
+//       y: [1, 2, 4, 8, 16] }];
+  
+//     Plotly.newPlot("dropdown_plot", data);
+//   }
+  
+//   d3.select("#selDataset").on("change", updatePlotly);
+
+
 function otu_plot () {
-   promise.then(data => {
+    var dropdownMenu = d3.select("#selDataset");
+    // Assign the value of the dropdown menu option to a variable
+    var dataset = dropdownMenu.property("value");
+
+    console.log("the data set selected is :: ", dataset);
+
+    promise.then(data => {
     
     // extract the otu_ids array from the json
     console.log("this is samples :: ", data.samples);
     var subjArr = data.samples.filter(row => row.id == 940);
-    console.log("this is subjArr :: ", subjArr);
+    console.log("this is subjArr :: ", subjArr[0].otu_ids);
     // console.log("this is idArr : ", subjArr);
 
     // var valArr = data.samples.map(row => row.sample_values);
@@ -46,4 +70,9 @@ function otu_plot () {
     // Plotly.newPlot("bar", data, layout);
   });
 }
-otu_plot()
+
+x = promise.then(data => {
+    var otuID = data.samples[0].otu_ids;
+    console.log("this is otuID", otuID);
+})
+
