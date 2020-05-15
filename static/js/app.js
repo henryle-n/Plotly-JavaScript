@@ -13,7 +13,44 @@ promise.then(data => {
     });
 
 
-
+// function to load initial dataset 
+function init() {
+    otuID = promise.then(data => {
+        // get subject name
+        var otuName = data.names[0];
+        console.log("this is subjName", otuName);
+        // get OTU IDs
+        var otuID = data.samples[0].otu_ids.map(eaID => "OTU " + eaID);
+        console.log("this is otuID", otuID);
+        // OTU Values 
+        var otuVal = data.samples[0].sample_values;
+        console.log("this is otuVal", otuVal);
+        // OTU Hover-over Text
+        var otuText = data.samples[0].otu_labels;
+        console.log("this is otuText", otuText);
+    
+        // create trace
+        var trace = {
+        type: "bar",
+        x: otuVal.slice(0,10), // slice first 10 data
+        y: otuID.slice(0,10), // slice first 10 data
+        text: otuText.slice(0,10), // slice first 10 data
+        orientation: 'h'
+        };
+    
+        // point plot's data to created trace 
+        var data = [trace];
+    
+        // specify layout format parameters
+        var layout = {
+          title: `Sample Analysis of Test Subject ID # ${otuName}`,
+          yaxis: {autorange: "reversed"}
+          };    
+    
+        // create plot with tag id=bar (from index.HTML)  
+        Plotly.newPlot("bar", data, layout);
+    })
+}
 
 
 
@@ -48,47 +85,5 @@ function otu_plot () {
 }
 
 
-otuID = promise.then(data => {
-    // get subject name
-    var otuName = data.names[0];
-    console.log("this is subjName", otuName);
-    // get OTU IDs
-    var otuID = data.samples[0].otu_ids.map(eaID => "OTU " + eaID);
-    console.log("this is otuID", otuID);
-    // OTU Values 
-    var otuVal = data.samples[0].sample_values;
-    console.log("this is otuVal", otuVal);
-    // OTU Hover-over Text
-    var otuText = data.samples[0].otu_labels;
-    console.log("this is otuText", otuText);
 
-    var trace = {
-    type: "bar",
-    y: otuID.slice(0,10),
-    x: otuVal.slice(0,10),
-    text: otuText.slice(0,10),
-    orientation: 'h'
-    };
-
-
-    var data = [trace];
-
-    var layout = {
-      title: `Sample Analysis of Test Subject ID # ${otuName}`,
-      yaxis: {autorange: "reversed"}
-      };    
-
-    Plotly.newPlot("bar", data, layout);
-    
-
-
-
-
-
-
-
-
-
-
-    })
  
