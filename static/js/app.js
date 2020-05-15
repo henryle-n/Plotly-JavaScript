@@ -44,36 +44,51 @@ function otu_plot () {
         var subjArr = data.samples.filter(row => row.id == 940);
         console.log("this is subjArr :: ", subjArr[0].otu_ids);
         console.log("this is idArr : ", subjArr);
-    });
-
-
-   
-    // var valArr = data.samples.map(row => row.sample_values);
-    //     valArr = valArr.flat(1)
-    //     console.log("this is valArr : ", valArr);
-
-    // var text = data.samples.otu_labels;
-
-
-    // var trace1 = {
-    //   type: "bar",
-    //   x: idArr,
-    //   y: valArr,
-    // //   text: text
-    // };
-
-
-    // var data = [trace1];
-
-    // var layout = {
-    //   title: "Sample Analysis"
-    //   };    
-
-    // Plotly.newPlot("bar", data, layout);
+    });   
 }
 
 
-x = promise.then(data => {
-    var otuID = data.samples[0].otu_ids;
+otuID = promise.then(data => {
+    // get subject name
+    var otuName = data.names[0];
+    console.log("this is subjName", otuName);
+    // get OTU IDs
+    var otuID = data.samples[0].otu_ids.map(eaID => "OTU " + eaID);
     console.log("this is otuID", otuID);
-    return otuID;})
+    // OTU Values 
+    var otuVal = data.samples[0].sample_values;
+    console.log("this is otuVal", otuVal);
+    // OTU Hover-over Text
+    var otuText = data.samples[0].otu_labels;
+    console.log("this is otuText", otuText);
+
+    var trace = {
+    type: "bar",
+    y: otuID.slice(0,10),
+    x: otuVal.slice(0,10),
+    text: otuText.slice(0,10),
+    orientation: 'h'
+    };
+
+
+    var data = [trace];
+
+    var layout = {
+      title: `Sample Analysis of Test Subject ID # ${otuName}`,
+      yaxis: {autorange: "reversed"}
+      };    
+
+    Plotly.newPlot("bar", data, layout);
+    
+
+
+
+
+
+
+
+
+
+
+    })
+ 
