@@ -33,22 +33,38 @@ function init() {
         // console.log("this is otuText", otuText);
     
         // create trace
-        var trace = {
+        var trace1 = {
         type: "bar",
         x: otuVal.slice(0,10), // slice first 10 data
         y: otuID.slice(0,10), // slice first 10 data
         text: otuText.slice(0,10), // slice first 10 data
-        orientation: 'h'
+        orientation: 'h',  // horizontal bar chart
+        name: 'OTU vs. Sample Values'
         };
-    
+        console.log("this is X in trace 1", trace1.x);
+        console.log("this is Y in trace 1", trace1.y);
         // point plot's data to created trace 
-        var data = [trace];
+        var data = [trace1];
     
         // specify layout format parameters
         var layout = {
-          title: `Sample Analysis of Test Subject ID # ${otuName}`,
-          yaxis: {autorange: "reversed"}
-          };    
+            title: `Sample Analysis of Test Subject ID # ${otuName}`,
+            xaxis: {
+                title: {
+                    text: "Sample Values"
+                },
+                showgrid : true, // major grid lines 
+                showline: true   // axis line
+            },
+            yaxis: {
+                title: {
+                    text: "Operational Taxonomic Units"
+                },  
+                autorange: "reversed",
+                showgrid : true,   // major grid lines
+                showline: true    // axis line
+            }
+        };    
     
         // create plot with tag id=bar (from index.HTML)  
         Plotly.newPlot("bar_plot", data, layout);
@@ -56,9 +72,12 @@ function init() {
 }
 
 d3.selectAll("#selDataset").on("change", updatePlotly);
-init()
+
 
 function updatePlotly () {
+    d3.event.preventDefault();
+    console.log("updatePlotly called");
+ 
     var dropdownMenu = d3.select("#selDataset");
     // Assign the value of the dropdown menu option to a variable
     var currSubID = dropdownMenu.property("value");
@@ -69,73 +88,39 @@ function updatePlotly () {
         // console.log("this is samples :: ", data.samples);
         var subjArr = data.samples.filter(row => row.id == currSubID);
         console.log("this is filtered object :: ", subjArr);
-        console.log("this is otu_id :: ", subjArr[0].otu_ids);
-
         // get OTU IDs
-        var otuID = subjArr.otu_ids;
-        // otuID = otuID.map(eaID => "OTU " + eaID);
+        var otuID = subjArr[0].otu_ids;
+        otuID = otuID.map(eaID => "OTU " + eaID);
         console.log("this is otuID", otuID);
-    //     // OTU Values 
-    //     var otuVal = subjArr.sample_values;
-    //     console.log("this is otuVal", otuVal);
-    //     // OTU Hover-over Text
-    //     var otuText = subjArr.otu_labels;
-    //     console.log("this is otuText", otuText);
+        // OTU Values 
+        var otuVal = subjArr[0].sample_values;
+        console.log("this is otuVal", otuVal);
+        // OTU Hover-over Text
+        var otuText = subjArr[0].otu_labels;
+        console.log("this is otuText", otuText);
+        // specify what needs to be updated
+        var update = {
+            text : otuText.slice(0,10),
+            x: [otuVal.slice(0,10)],
+            y: [otuID.slice(0,10)]
+        };
 
-    //     var x = otuVal.slice(0,10);
-    //     var y = otuID.slice(0,10);
-     
-    //     Plotly.restyle("bar_plot", "x", [x]);
-    //     Plotly.restyle("bar_plot", "y", [y]);
-        
-    //         // point plot's data to created trace 
-    //     // var data = [trace];
-    
-    //     // specify layout format parameters
-    //     // var layout = {
-    //     //     title: `Sample Analysis of Test Subject ID # ${otuName}`,
-    //     //     yaxis: {autorange: "reversed"}
-    //     //     };    
-    
-    //     // create plot with tag id=bar (from index.HTML)  
-    //     // Plotly.newPlot("bar", data, layout);
-    })
-  
+        console.log("this is new trace X :: ", update.x, "\n"
+            )
+
+        // specify new graph title
+        var reLayout = {
+            title: `Sample Analysis of Test Subject ID # ${currSubID}`,
+        }; 
+
+        Plotly.restyle("bar_plot", update);
+        Plotly.relayout("bar_plot", reLayout)
+    })  
 }
 
 
-
-// function updatePlotly() {
-//   // debugging technique to see if we got to the function
-//   console.log("updatePlotly called");
-//   // Select the dropdown menu
-//   var dropdownMenu = d3.select("#selsubjID");
-//   // Assign the value of the dropdown menu option to a variable
-//   var subjID = dropdownMenu.property("value");
-
-//   console.info("subjID selected",subjID);
-//   alert(subjID);
-
-//   // Initialize x and y arrays
-//   var x = [];
-//   var y = [];
-
-//   if (subjID === 'subjID1') {
-//     x = [1, 2, 3, 4, 5];
-//     y = [1, 2, 4, 8, 16];
-//   }
-
-//   if (subjID === 'subjID2') {
-//     x = [10, 20, 30, 40, 50];
-//     y = [1, 10, 100, 1000, 10000];
-//   }
-
-//   // Note the extra brackets around 'x' and 'y'
-//   Plotly.restyle("dropdown_plot", "x", [x]);
-//   Plotly.restyle("dropdown_plot", "y", [y]);
-// }
-
-
 // Call updatePlotly() when a change takes place to the DOM
-// console.info("attempting event handling");
-// console.log(d3.select("#selDataset")); 
+console.info("attempting event handling");
+console.log(d3.select("#selDataset")); 
+
+init()
