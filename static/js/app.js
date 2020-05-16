@@ -18,6 +18,7 @@ promise.then(data => {
 
 // ====================== BAR CHART =====================    
 // function to load initial subjID 
+var demInfoBox = d3.select(".panel-body");
 function init() {
 
     d3.selectAll("#selDataset").on("change", updatePlotly);
@@ -35,6 +36,15 @@ function init() {
         // OTU Hover-over Text
         var otuText = data.samples[0].otu_labels;
         // console.log("this is otuText", otuText);
+
+        // extract the demographic info
+        demInfoBox.html("")
+        var demInfo = data.metadata.filter(row => row.id == otuName)[0];
+        Object.entries(demInfo).forEach(([key, value]) => {
+            console.log("this is key and value :: ", key, value);
+            demInfoBox.append("p").text(`${key}: ${value}`);
+        });
+        console.log("this is filtered metadata :: ", demInfo);
     
         // create trace
         var trace1 = {
@@ -90,10 +100,19 @@ function updatePlotly () {
     
     // filter data based on user selection of "Test Subject ID No."
     promise.then(data => {    
+
         // extract the otu_ids array from the json
-        // console.log("this is samples :: ", data.samples);
         var subjArr = data.samples.filter(row => row.id == currSubID);
-        console.log("this is filtered object :: ", subjArr);
+        console.log("this is filtered samples :: ", subjArr);
+
+        // extract metadata and make a box
+        demInfoBox.html("")
+        demInfo = data.metadata.filter(row => row.id == currSubID)[0];
+        Object.entries(demInfo).forEach(([key, value]) => {
+            console.log("this is key and value :: ", key, value);
+            demInfoBox.append("p").text(`${key}: ${value}`);
+        });
+        console.log("this is filtered metadata :: ", demInfo);
 
         // get OTU IDs
         var otuID = subjArr[0].otu_ids;
