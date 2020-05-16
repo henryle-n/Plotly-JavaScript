@@ -13,6 +13,10 @@ promise.then(data => {
     });
 
 
+
+
+
+// ====================== BAR CHART =====================    
 // function to load initial subjID 
 function init() {
 
@@ -79,28 +83,34 @@ function updatePlotly () {
     console.log("updatePlotly called");
  
     var dropdownMenu = d3.select("#selDataset");
+
     // Assign the value of the dropdown menu option to a variable
     var currSubID = dropdownMenu.property("value");
     console.log("the data set selected is :: ", currSubID);
-    // Test Subject ID #
+    
+    // filter data based on user selection of "Test Subject ID No."
     promise.then(data => {    
         // extract the otu_ids array from the json
         // console.log("this is samples :: ", data.samples);
         var subjArr = data.samples.filter(row => row.id == currSubID);
         console.log("this is filtered object :: ", subjArr);
+
         // get OTU IDs
         var otuID = subjArr[0].otu_ids;
         otuID = otuID.map(eaID => "OTU " + eaID);
         console.log("this is otuID", otuID);
+
         // OTU Values 
         var otuVal = subjArr[0].sample_values;
         console.log("this is otuVal", otuVal);
+
         // OTU Hover-over Text
         var otuText = subjArr[0].otu_labels;
         console.log("this is otuText", otuText);
+
         // specify what needs to be updated
         var update = {
-            text : otuText.slice(0,10),
+            text : otuText.slice(0,10),  // take only top 10 data points 
             x: [otuVal.slice(0,10)],
             y: [otuID.slice(0,10)]
         };
@@ -113,6 +123,7 @@ function updatePlotly () {
             title: `Sample Analysis of Test Subject ID # ${currSubID}`,
         }; 
 
+        // update plot
         Plotly.restyle("bar_plot", update);
         Plotly.relayout("bar_plot", reLayout)
     })  
@@ -124,3 +135,18 @@ console.info("attempting event handling");
 console.log(d3.select("#selDataset")); 
 
 init()
+
+// ====================== BUBBLE CHART =====================
+// Use otu_ids for the x values.
+
+
+// Use sample_values for the y values.
+
+
+// Use sample_values for the marker size.
+
+
+// Use otu_ids for the marker colors.
+
+
+// Use otu_labels for the text values.
