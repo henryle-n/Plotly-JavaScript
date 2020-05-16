@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\Class_Materials\\RU-HOU-DATA-PT-12-2019-U-C\\MW-Class\\15-Interactive-Visualizations-and-Dashboards"
+		},
+		{
+			"path": "..\\..\\Class_Materials\\RU-HOU-DATA-PT-12-2019-U-C\\MW-Class\\16-D3"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Plotly-JavaScript",
+		"liveServer.settings.port": 5501
+	}
+}
