@@ -4,7 +4,6 @@ promise = d3.json('data/samples.json');
 //create an array of all subject IDs 
 promise.then(data => {
     var subjID = data.names;
-    var samples = data.samples;
     // console.log("this is subID", subjID);
     d3.select("select").selectAll("option")
     .data(subjID)
@@ -16,6 +15,7 @@ promise.then(data => {
 // ====================== BAR CHART =====================    
 // function to load initial subjID 
 var demInfoBox = d3.select(".panel-body");
+
 function init() {
 
     d3.selectAll("#selDataset").on("change", updatePlotly);
@@ -44,14 +44,14 @@ function init() {
         y: otuID.slice(0,10).map(eaID => "OTU " + eaID), // slice first 10 data
         text: otuText.slice(0,10), // slice first 10 data
         orientation: 'h',  // horizontal bar chart
-        name: 'OTU vs. Sample Values'
+        name: 'Top 10 OTU Sample Values'
         };
 
         // point plot's data to created traceBar 
-        var data = [traceBar];
+        var dataBar = [traceBar];
     
         // specify layout format parameters
-        var layout = {
+        var layoutBar = {
             title: `Sample Analysis of Test Subject ID # ${otuName}`,
             xaxis: {
                 title: {
@@ -73,7 +73,7 @@ function init() {
         };    
     
         // create plot with tag id=bar (from index.HTML)  
-        Plotly.newPlot("bar_plot", data, layout);
+        Plotly.newPlot("bar_plot", dataBar, layoutBar);
         
         
         // ====================== BUBBLE CHART =====================
@@ -86,7 +86,7 @@ function init() {
             y : otuVal,
             marker : {
                 // Use otu_ids for the marker colors.
-                // color: ['red', 'blue', 'green'],
+                color: otuID,
 
                  // Use sample_values for the marker size.
                 size: otuVal
@@ -101,13 +101,14 @@ function init() {
         var dataBble = [traceBble];
 
         var layoutBble = {
-            title: 'Bubble Chart',
+            title: `Sample Analysis of Test Subject ID # ${otuName}`,
             showlegend: false,
             height: 600,
             width: 1000,
+            
             xaxis: {
                 title: {
-                    text: "Sample Values"
+                    text: "OTU"
                 },
                 showgrid : true, // major grid lines 
                 showline: true   // axis line
@@ -151,7 +152,6 @@ function updatePlotly () {
 
         // get OTU IDs
         var otuID = subjArr[0].otu_ids;
-        otuID = otuID.map(eaID => `OTU ${eaID}`);
 
         // OTU Values 
         var otuVal = subjArr[0].sample_values;
@@ -162,24 +162,65 @@ function updatePlotly () {
 
         // ====================== UPDATE BAR CHART ========================
         // specify what needs to be updated
-        var update = {
+        var updateBar = {
             text : otuText.slice(0,10),  // take only top 10 data points 
             x: [otuVal.slice(0,10)],
-            y: [otuID.slice(0,10)]
+            y: [otuID.slice(0,10).map(eaID => `OTU ${eaID}`)]
         };
 
         // specify new graph title
-        var reLayout = {
+        var reLayoutBar = {
             title: `Sample Analysis of Test Subject ID # ${currSubID}`,
         }; 
 
-        // update plot
-        Plotly.restyle("bar_plot", update);
-        Plotly.relayout("bar_plot", reLayout)
+        // update bar plot
+        Plotly.restyle("bar_plot", updateBar);
+        Plotly.relayout("bar_plot", reLayoutBar)
 
 
     // ====================== BUBBLE CHART =====================
 
+        var traceBble = {
+            // Use otu_ids for the x values.
+            x : otuID,
+            y : otuVal,
+            marker : {
+                // Use otu_ids for the marker colors.
+                color: otuID,
+
+                // Use sample_values for the marker size.
+                size: otuVal
+            },
+            mode :'markers',
+
+            // Use otu_labels for the text values.
+            text: otuText 
+        };
+
+        
+        var dataBble = [traceBble];
+
+        var layoutBble = {
+            title: 'Bubble Chart',
+            showlegend: false,
+            height: 600,
+            width: 1000,
+            xaxis: {
+                title: {
+                    text: "Sample Values"
+                },
+                showgrid : true, // major grid lines 
+                showline: true   // axis line
+            },
+            yaxis: {
+                title: {
+                    text: "Sample Values"
+                },  
+                showgrid : true,   // major grid lines
+                showline: true,    // axis line
+                rangemode : "tozero"
+            }
+        };
 
         
   
