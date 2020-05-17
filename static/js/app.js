@@ -14,7 +14,9 @@ promise.then(data => {
 
 // ====================== BAR CHART =======================    
 // function to load initial subjID 
-var demInfoBox = d3.select(".panel-body");
+var demInfoBox = d3.select(".panel-body").append("ul");
+var demInfoBox = d3.select(".panel-body").attr("style", "padding:10px");
+
 
 function init() {
 
@@ -35,8 +37,11 @@ function init() {
         var demInfo = data.metadata.filter(row => row.id == otuName)[0];
         wfq = demInfo.wfreq;
         console.log("wash frequency", wfq);
+
         Object.entries(demInfo).forEach(([key, value]) => {
-            demInfoBox.append("p").text(`${key}: ${value}`);
+            demInfoBox.append("li").text(`${key} : ${value}`);
+            // demInfoBox.append("p").text(key + " : " + value);
+
         });
     
 
@@ -48,7 +53,11 @@ function init() {
             y: otuID.slice(0,10).map(eaID => "OTU " + eaID), // slice first 10 data
             text: otuText.slice(0,10), // slice first 10 data
             orientation: 'h',  // horizontal bar chart
-            name: 'Top 10 OTU Sample Values'
+            name: 'Top 10 OTU Sample Values',
+            marker : {
+                // Use otu_ids for the marker colors.
+                color: otuID
+            }
         };
 
         // point plot's data to created traceBar 
@@ -56,7 +65,7 @@ function init() {
     
         // specify layout format parameters
         var layoutBar = {
-            title: `Top 10 Sample Analysis | Test Subject ID # ${otuName}`,
+            title: `Top 10 Sample Analysis <br> Test Subject ID # <b>${otuName} </b>`,
             xaxis: {
                 title: {
                     text: "Sample Values"
@@ -105,7 +114,7 @@ function init() {
         var dataBble = [traceBble];
 
         var layoutBble = {
-            title: `Sample Analysis | Test Subject ID # ${otuName}`,
+            title: `Sample Analysis <br> Test Subject ID # <b>${otuName} </b>`,
             showlegend: false,
             height: 600,
             width: 1000,
@@ -128,85 +137,19 @@ function init() {
         };
 
         Plotly.newPlot("bubble", dataBble, layoutBble);  
-        
-        // ================== GAUGE CHART =====================
-        
-        // OPTION 1: =========================
-        // var traceGauge = [
-        //     {
-        //         domain: {
-        //             x: [0, 1], 
-        //             y: [0, 1] },
-        //         value: wfq,
-        //         title: { text: "Scrubs per Week" },
-        //         type: "indicator",
-        //         mode: "gauge+number"
-        //     }
-        // ];
-        
-        // var layoutGauge = { width: 500, height: 500, margin: { t: 0, b: 0 } };
-        // Plotly.newPlot('gauge', traceGauge, layoutGauge);
 
-        // OPTION 2:====================
-        // var traceGauge = [
-        //     {
-        //       type: "indicator",
-        //       mode: "gauge+number",
-        //       value: wfq,
-        //       title: {text: "Scrubs per Week", font: { size: 24 } },
-        //       gauge: {
-        //         axis: {range: [0, 9], tickwidth: 1, tickcolor: "darkblue"},
-        //         bar: {color: "darkkhaki"},
-        //         bgcolor: "white",
-        //         borderwidth: 2,
-        //         bordercolor: "black",
-        //         steps: [
-        //           {range: [0, 1], color: "white"},
-        //           {range: [1, 2], color: "oldlace"},
-        //           {range: [2, 3], color: "cornsilk"},
-        //           {range: [3, 4], color: "antiquewhite"},
-        //           {range: [4, 5], color: "bisque"},
-        //           {range: [5, 6], color: "wheat"},
-        //           {range: [6, 7], color: "tan"},
-        //           {range: [7, 8], color: "goldenrod"},
-        //           {range: [8, 9], color: "darkgoldenrod"}
-        //         ],
-        //         threshold: {
-        //           line: {color: "orange", width: 3},
-        //           thickness: 2,
-        //           value: 0
-        //         }
-        //       }
-        //     }
-        //   ];
-          
-        //   var layoutGauge = {
-        //     width: 500,
-        //     height: 400,
-        //     margin: {t: 0, r: 0, l: 0, b: 0},
-        //     paper_bgcolor: "white",
-        //     font: {color: "firebrick", family: "Arial"}
-        //   };
-          
-        //   Plotly.newPlot('gauge', traceGauge, layoutGauge);
-
-
-          // Enter a speed between 0 and 180
-
-        //   OPTION 3: ===================
-        
-        var level = 180* wfq/9;
+        // convert from wash frequency to
+        var needlePos = 180 * wfq / 9;
 
         // Trig to calc meter point
-        var degrees = 180 - level,
-            radius = 0.55;
-        var radians = degrees * Math.PI / 180;
-        var x = radius * Math.cos(radians);
-        var y = radius * Math.sin(radians);
+        var needleDeg = 180 - needlePos,
+            needleRadius = 0.55;
+        var needleRads = needleDeg * Math.PI / 180;
+        var x = needleRadius * Math.cos(needleRads);
+        var y = needleRadius * Math.sin(needleRads);
 
-        // Path: may have to change to create a better triangle
-        // var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
-        // ========= only for needle
+        // ============ create needle by using path ===================
+        var needleColor = '#610d9e';
         var mainPath = 'M -.0 -0.015 L .0 0.015 L ',
             pathX = String(x),
             space = ' ',
@@ -216,13 +159,13 @@ function init() {
         console.log("this is path needle :: ", path);
 
 
-
+        // create needle root (round object) by using scatter plot with single data point
         var traceGauge = [{ type: 'scatter',
         x: [0], y:[0],
-            marker: {size: 28, color:'850000'},
+            marker: {size: 20, color:needleColor},
             showlegend: false,
-            name: 'speed',
-            text: level,
+            name: 'wash / week',
+            text: wfq,
             hoverinfo: 'text+name'},
         { values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50],
         rotation: 90,
@@ -230,19 +173,6 @@ function init() {
                     '4-5', '5-6', '6-7', '7-8', '8-9'].reverse(),
         textinfo: 'text',
         textposition:'inside',	  
-        // marker: {colors: [
-        //     'rgba(14, 127, 0, .5)',
-        //     'rgba(14, 127, 0, .5)',
-        //     'rgba(14, 127, 0, .5)',
-        //     'rgba(110, 154, 22, .5)',
-        //     'rgba(170, 202, 42, .5)',
-        //     'rgba(202, 209, 95, .5)',
-        //     'rgba(210, 206, 145, .5)',
-        //     'rgba(232, 226, 202, .5)',
-        //     'rgba(230, 255, 255, 0.5)',
-        //     'rgba(255, 255, 255, 0)'
-        // ]},
-
         marker: {colors: [
             'rgba(171, 42, 22, .5)',
             'rgba(186, 61, 41, .5)',
@@ -261,23 +191,23 @@ function init() {
         type: 'pie',
         showlegend: false
         }];
-        var showBool = false;
+        var showGrids = true;
         var layoutGauge = {
         shapes:[{
             type: 'path',
             path: path,
-            fillcolor: '850000',
+            fillcolor: needleColor,
             line: {
-                color: '850000'
+                color: needleColor
             }
             }],
         title: '<b>Belly Button Washing Frequency</b><br> Scrubs per Week',
         height: 600,
         width: 700,
-        xaxis: {zeroline:showBool, showticklabels:showBool,
-                    showgrid: showBool, range: [-1, 1]},
-        yaxis: {zeroline:showBool, showticklabels:showBool,
-                    showgrid: showBool, range: [-1, 1]}
+        xaxis: {zeroline:showGrids, showticklabels:showGrids,
+                    showgrid: showGrids, range: [-1, 1]},
+        yaxis: {zeroline:showGrids, showticklabels:showGrids,
+                    showgrid: showGrids, range: [-1, 1]}
         };
 
         Plotly.newPlot('gauge', traceGauge, layoutGauge, {showSendToCloud:true});
@@ -328,8 +258,8 @@ function updatePlotly () {
 
         // specify new graph title
         var reLayoutBar = {
-            title: `Top 10 Sample Analysis | Test Subject ID # ${currSubID}`,
-        }; 
+            // title: `Top 10 Sample Analysis | Test Subject ID # ${currSubID}`,
+            title: `Top 10 Sample Analysis <br> Test Subject ID # <b>${currSubID} </b>`        }; 
 
         // update bar plot
         Plotly.restyle("bar_plot", updateBar);
@@ -347,7 +277,7 @@ function updatePlotly () {
 
     // specify new chart title
     var reLayoutBble = {
-        title: `Sample Analysis | Test Subject ID # ${currSubID}`,
+        title: `Sample Analysis <br> Test Subject ID # <b>${currSubID} </b>`,
     }; 
 
     // update bar plot
@@ -357,12 +287,12 @@ function updatePlotly () {
     
     // ================== GAUGE CHART =====================
 
-    // var updateGauge = {
-    //         value: wfq
-    //         // title: { text: "Scrubs per Week" },
-    //     };
+    var updateGauge = {
+            value: wfq
+            // title: { text: "Scrubs per Week" },
+        };
     
-    // Plotly.restyle("gauge", updateGauge);
+    Plotly.restyle("gauge", updateGauge);
     })  
 }
 
