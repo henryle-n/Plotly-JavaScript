@@ -12,7 +12,7 @@ promise.then(data => {
     .text(function (idNum) {return idNum});
 });
 
-// ====================== BAR CHART =====================    
+// ====================== BAR CHART =======================    
 // function to load initial subjID 
 var demInfoBox = d3.select(".panel-body");
 
@@ -33,6 +33,8 @@ function init() {
         // extract the demographic info
         demInfoBox.html("");
         var demInfo = data.metadata.filter(row => row.id == otuName)[0];
+        wfq = demInfo.wfreq;
+        console.log("wash frequency", wfq);
         Object.entries(demInfo).forEach(([key, value]) => {
             demInfoBox.append("p").text(`${key}: ${value}`);
         });
@@ -76,7 +78,7 @@ function init() {
         Plotly.newPlot("bar_plot", dataBar, layoutBar);
         
         
-        // ====================== BUBBLE CHART =====================
+        // ======================== BUBBLE CHART =======================
         
         console.log("bubble size = sample values :: ", otuVal);
         // Use sample_values for the y values.
@@ -123,7 +125,23 @@ function init() {
             }
         };
 
-        Plotly.newPlot("bubble", dataBble, layoutBble);      
+        Plotly.newPlot("bubble", dataBble, layoutBble);  
+        
+        // ================== GAUGE CHART =====================
+        var traceGauge = [
+            {
+                domain: {
+                    x: [0, 1], 
+                    y: [0, 1] },
+                value: wfq,
+                title: { text: "Scrubs per Week" },
+                type: "indicator",
+                mode: "gauge+number"
+            }
+        ];
+        
+        var layoutGauge = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+        Plotly.newPlot('gauge', traceGauge, layoutGauge);
     })
 }
 d3.selectAll("#selDataset").on("change", updatePlotly);
@@ -146,6 +164,7 @@ function updatePlotly () {
         // extract metadata and make a box
         demInfoBox.html("")
         demInfo = data.metadata.filter(row => row.id == currSubID)[0];
+        wfq = demInfo.wfreq; // wash frequency 
         Object.entries(demInfo).forEach(([key, value]) => {
             demInfoBox.append("p").text(`${key}: ${value}`);
         });
@@ -197,53 +216,27 @@ function updatePlotly () {
     Plotly.relayout("bubble", reLayoutBble)
     
     
+    // ================== GAUGE CHART =====================
+    // var updateGauge = [
+    //     {
+    //         value: wfq,
+    //     }
+    // ];
     
+    var updateGauge = [
+        {
+            domain: {
+                x: [0, 1], 
+                y: [0, 1] },
+            value: wfq,
+            title: { text: "Scrubs per Week" },
+            type: "indicator",
+            mode: "gauge+number"
+        }
+    ];
     
-    // var traceBble = {
-    //         // Use otu_ids for the x values.
-    //         x : otuID,
-    //         y : otuVal,
-    //         marker : {
-    //             // Use otu_ids for the marker colors.
-    //             color: otuID,
-
-    //             // Use sample_values for the marker size.
-    //             size: otuVal
-    //         },
-    //         mode :'markers',
-
-    //         // Use otu_labels for the text values.
-    //         text: otuText 
-    //     };
-
-        
-    //     var dataBble = [traceBble];
-
-    //     var layoutBble = {
-    //         title: 'Bubble Chart',
-    //         showlegend: false,
-    //         height: 600,
-    //         width: 1000,
-    //         xaxis: {
-    //             title: {
-    //                 text: "Sample Values"
-    //             },
-    //             showgrid : true, // major grid lines 
-    //             showline: true   // axis line
-    //         },
-    //         yaxis: {
-    //             title: {
-    //                 text: "Sample Values"
-    //             },  
-    //             showgrid : true,   // major grid lines
-    //             showline: true,    // axis line
-    //             rangemode : "tozero"
-    //         }
-    //     };
-
-        
-  
-
+    Plotly.restyle("gauge", updateGauge);
+    
     
     })  
 }
