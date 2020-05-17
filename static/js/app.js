@@ -39,14 +39,16 @@ function init() {
             demInfoBox.append("p").text(`${key}: ${value}`);
         });
     
-        // create traceBarBar
+
+        // ============================= BAR CHART ================
+        // create traceBar
         var traceBar = {
-        type: "bar",
-        x: otuVal.slice(0,10), // slice first 10 data
-        y: otuID.slice(0,10).map(eaID => "OTU " + eaID), // slice first 10 data
-        text: otuText.slice(0,10), // slice first 10 data
-        orientation: 'h',  // horizontal bar chart
-        name: 'Top 10 OTU Sample Values'
+            type: "bar",
+            x: otuVal.slice(0,10), // slice first 10 data
+            y: otuID.slice(0,10).map(eaID => "OTU " + eaID), // slice first 10 data
+            text: otuText.slice(0,10), // slice first 10 data
+            orientation: 'h',  // horizontal bar chart
+            name: 'Top 10 OTU Sample Values'
         };
 
         // point plot's data to created traceBar 
@@ -113,35 +115,172 @@ function init() {
                     text: "OTU"
                 },
                 showgrid : true, // major grid lines 
-                showline: true   // axis line
+                showline: false   // axis line
             },
             yaxis: {
                 title: {
                     text: "Sample Values"
                 },  
                 showgrid : true,   // major grid lines
-                showline: true,    // axis line
-                rangemode : "tozero"
+                showline: false,    // axis line
+                // rangemode : "tozero"
             }
         };
 
         Plotly.newPlot("bubble", dataBble, layoutBble);  
         
         // ================== GAUGE CHART =====================
-        var traceGauge = [
-            {
-                domain: {
-                    x: [0, 1], 
-                    y: [0, 1] },
-                value: wfq,
-                title: { text: "Scrubs per Week" },
-                type: "indicator",
-                mode: "gauge+number"
-            }
-        ];
         
-        var layoutGauge = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-        Plotly.newPlot('gauge', traceGauge, layoutGauge);
+        // OPTION 1: =========================
+        // var traceGauge = [
+        //     {
+        //         domain: {
+        //             x: [0, 1], 
+        //             y: [0, 1] },
+        //         value: wfq,
+        //         title: { text: "Scrubs per Week" },
+        //         type: "indicator",
+        //         mode: "gauge+number"
+        //     }
+        // ];
+        
+        // var layoutGauge = { width: 500, height: 500, margin: { t: 0, b: 0 } };
+        // Plotly.newPlot('gauge', traceGauge, layoutGauge);
+
+        // OPTION 2:====================
+        // var traceGauge = [
+        //     {
+        //       type: "indicator",
+        //       mode: "gauge+number",
+        //       value: wfq,
+        //       title: {text: "Scrubs per Week", font: { size: 24 } },
+        //       gauge: {
+        //         axis: {range: [0, 9], tickwidth: 1, tickcolor: "darkblue"},
+        //         bar: {color: "darkkhaki"},
+        //         bgcolor: "white",
+        //         borderwidth: 2,
+        //         bordercolor: "black",
+        //         steps: [
+        //           {range: [0, 1], color: "white"},
+        //           {range: [1, 2], color: "oldlace"},
+        //           {range: [2, 3], color: "cornsilk"},
+        //           {range: [3, 4], color: "antiquewhite"},
+        //           {range: [4, 5], color: "bisque"},
+        //           {range: [5, 6], color: "wheat"},
+        //           {range: [6, 7], color: "tan"},
+        //           {range: [7, 8], color: "goldenrod"},
+        //           {range: [8, 9], color: "darkgoldenrod"}
+        //         ],
+        //         threshold: {
+        //           line: {color: "orange", width: 3},
+        //           thickness: 2,
+        //           value: 0
+        //         }
+        //       }
+        //     }
+        //   ];
+          
+        //   var layoutGauge = {
+        //     width: 500,
+        //     height: 400,
+        //     margin: {t: 0, r: 0, l: 0, b: 0},
+        //     paper_bgcolor: "white",
+        //     font: {color: "firebrick", family: "Arial"}
+        //   };
+          
+        //   Plotly.newPlot('gauge', traceGauge, layoutGauge);
+
+
+          // Enter a speed between 0 and 180
+
+        //   OPTION 3: ===================
+        
+        var level = 180* wfq/9;
+
+        // Trig to calc meter point
+        var degrees = 180 - level,
+            radius = 0.55;
+        var radians = degrees * Math.PI / 180;
+        var x = radius * Math.cos(radians);
+        var y = radius * Math.sin(radians);
+
+        // Path: may have to change to create a better triangle
+        // var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
+        // ========= only for needle
+        var mainPath = 'M -.0 -0.015 L .0 0.015 L ',
+            pathX = String(x),
+            space = ' ',
+            pathY = String(y),
+            pathEnd = ' Z';
+        var path = mainPath.concat(pathX, space, pathY, pathEnd);
+        console.log("this is path needle :: ", path);
+
+
+
+        var traceGauge = [{ type: 'scatter',
+        x: [0], y:[0],
+            marker: {size: 28, color:'850000'},
+            showlegend: false,
+            name: 'speed',
+            text: level,
+            hoverinfo: 'text+name'},
+        { values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50],
+        rotation: 90,
+        text: ['0-1', '1-2', '2-3', '3-4',
+                    '4-5', '5-6', '6-7', '7-8', '8-9'].reverse(),
+        textinfo: 'text',
+        textposition:'inside',	  
+        // marker: {colors: [
+        //     'rgba(14, 127, 0, .5)',
+        //     'rgba(14, 127, 0, .5)',
+        //     'rgba(14, 127, 0, .5)',
+        //     'rgba(110, 154, 22, .5)',
+        //     'rgba(170, 202, 42, .5)',
+        //     'rgba(202, 209, 95, .5)',
+        //     'rgba(210, 206, 145, .5)',
+        //     'rgba(232, 226, 202, .5)',
+        //     'rgba(230, 255, 255, 0.5)',
+        //     'rgba(255, 255, 255, 0)'
+        // ]},
+
+        marker: {colors: [
+            'rgba(171, 42, 22, .5)',
+            'rgba(186, 61, 41, .5)',
+            'rgba(201, 89, 71, .5)',
+            'rgba(212, 115, 100, .5)',
+            'rgba(222, 140, 127, .5)',
+            'rgba(230, 159, 148, .5)',
+            'rgba(245, 190, 182, .5)',
+            'rgba(250, 211, 204, .5)',
+            'rgba(255, 224, 219, 0.5)',
+            'rgba(255, 255, 255, 0)'
+        ]},
+        // labels: ['151-180', '121-150', '91-120', '61-90', '31-60', '0-30', ''],
+        // hoverinfo: 'label',
+        hole: 0.5,
+        type: 'pie',
+        showlegend: false
+        }];
+        var showBool = false;
+        var layoutGauge = {
+        shapes:[{
+            type: 'path',
+            path: path,
+            fillcolor: '850000',
+            line: {
+                color: '850000'
+            }
+            }],
+        title: '<b>Belly Button Washing Frequency</b><br> Scrubs per Week',
+        height: 600,
+        width: 700,
+        xaxis: {zeroline:showBool, showticklabels:showBool,
+                    showgrid: showBool, range: [-1, 1]},
+        yaxis: {zeroline:showBool, showticklabels:showBool,
+                    showgrid: showBool, range: [-1, 1]}
+        };
+
+        Plotly.newPlot('gauge', traceGauge, layoutGauge, {showSendToCloud:true});
     })
 }
 d3.selectAll("#selDataset").on("change", updatePlotly);
@@ -217,27 +356,13 @@ function updatePlotly () {
     
     
     // ================== GAUGE CHART =====================
-    // var updateGauge = [
-    //     {
-    //         value: wfq,
-    //     }
-    // ];
+
+    // var updateGauge = {
+    //         value: wfq
+    //         // title: { text: "Scrubs per Week" },
+    //     };
     
-    var updateGauge = [
-        {
-            domain: {
-                x: [0, 1], 
-                y: [0, 1] },
-            value: wfq,
-            title: { text: "Scrubs per Week" },
-            type: "indicator",
-            mode: "gauge+number"
-        }
-    ];
-    
-    Plotly.restyle("gauge", updateGauge);
-    
-    
+    // Plotly.restyle("gauge", updateGauge);
     })  
 }
 
