@@ -52,7 +52,7 @@ function init() {
     
         // specify layout format parameters
         var layoutBar = {
-            title: `Sample Analysis of Test Subject ID # ${otuName}`,
+            title: `Top 10 Sample Analysis | Test Subject ID # ${otuName}`,
             xaxis: {
                 title: {
                     text: "Sample Values"
@@ -78,7 +78,7 @@ function init() {
         
         // ====================== BUBBLE CHART =====================
         
-
+        console.log("bubble size = sample values :: ", otuVal);
         // Use sample_values for the y values.
         var traceBble = {
             // Use otu_ids for the x values.
@@ -101,7 +101,7 @@ function init() {
         var dataBble = [traceBble];
 
         var layoutBble = {
-            title: `Sample Analysis of Test Subject ID # ${otuName}`,
+            title: `Sample Analysis | Test Subject ID # ${otuName}`,
             showlegend: false,
             height: 600,
             width: 1000,
@@ -170,7 +170,7 @@ function updatePlotly () {
 
         // specify new graph title
         var reLayoutBar = {
-            title: `Sample Analysis of Test Subject ID # ${currSubID}`,
+            title: `Top 10 Sample Analysis | Test Subject ID # ${currSubID}`,
         }; 
 
         // update bar plot
@@ -179,48 +179,67 @@ function updatePlotly () {
 
 
     // ====================== BUBBLE CHART =====================
-
-        var traceBble = {
-            // Use otu_ids for the x values.
-            x : otuID,
-            y : otuVal,
-            marker : {
-                // Use otu_ids for the marker colors.
-                color: otuID,
-
-                // Use sample_values for the marker size.
-                size: otuVal
-            },
-            mode :'markers',
-
-            // Use otu_labels for the text values.
-            text: otuText 
+        console.log("bubble size = sample values :: ", otuVal);
+       // specify what needs to be updated
+       var updateBble = {
+        text : otuText, 
+        x: [otuID],   // Use `otu_ids` for the x values
+        y: [otuVal]   // Use `sample_values` for the y values
         };
+
+    // specify new chart title
+    var reLayoutBble = {
+        title: `Sample Analysis | Test Subject ID # ${currSubID}`,
+    }; 
+
+    // update bar plot
+    Plotly.restyle("bubble", updateBble);
+    Plotly.relayout("bubble", reLayoutBble)
+    
+    
+    
+    
+    // var traceBble = {
+    //         // Use otu_ids for the x values.
+    //         x : otuID,
+    //         y : otuVal,
+    //         marker : {
+    //             // Use otu_ids for the marker colors.
+    //             color: otuID,
+
+    //             // Use sample_values for the marker size.
+    //             size: otuVal
+    //         },
+    //         mode :'markers',
+
+    //         // Use otu_labels for the text values.
+    //         text: otuText 
+    //     };
 
         
-        var dataBble = [traceBble];
+    //     var dataBble = [traceBble];
 
-        var layoutBble = {
-            title: 'Bubble Chart',
-            showlegend: false,
-            height: 600,
-            width: 1000,
-            xaxis: {
-                title: {
-                    text: "Sample Values"
-                },
-                showgrid : true, // major grid lines 
-                showline: true   // axis line
-            },
-            yaxis: {
-                title: {
-                    text: "Sample Values"
-                },  
-                showgrid : true,   // major grid lines
-                showline: true,    // axis line
-                rangemode : "tozero"
-            }
-        };
+    //     var layoutBble = {
+    //         title: 'Bubble Chart',
+    //         showlegend: false,
+    //         height: 600,
+    //         width: 1000,
+    //         xaxis: {
+    //             title: {
+    //                 text: "Sample Values"
+    //             },
+    //             showgrid : true, // major grid lines 
+    //             showline: true   // axis line
+    //         },
+    //         yaxis: {
+    //             title: {
+    //                 text: "Sample Values"
+    //             },  
+    //             showgrid : true,   // major grid lines
+    //             showline: true,    // axis line
+    //             rangemode : "tozero"
+    //         }
+    //     };
 
         
   
