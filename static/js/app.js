@@ -149,29 +149,6 @@ function init() {
                 3. Inner circle (hole of the same pie chart) to masquerade the blank space from the needle to the bottom of the gauge slices 
         */
 
-        // convert from wash frequency to Cartisan and Polar coordinates
-        // find equivalence of wash freq to 1/2  circle =180-deg or PI~3.1416
-        // there are total 9 slices
-
-
-
-        
-        // var needlePos = 180 * wfq/ sliceNo;    
-        
-        // //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to flip angle back to clockwise
-        // var needleDeg = 180 - needlePos;
-        // var needleRadius = 0.5;
-        // var needleRads = needleDeg * Math.PI / 180;
-
-        // // then convert from Polar coordinates back to Cartesian coordinates
-        // var x = needleRadius * Math.cos(needleRads);         
-        // var y = needleRadius * Math.sin(needleRads);
-
-        // // ============ create needle by using path with Cartisan Coordinates===================
-        // var baseNeedlePath = 'M -.0 -0.02 L .0 0.02 L'
-        // var finalPath = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
-        // console.log("this is needle path :: ", path);
-
         // getting the path for needle
         finalPath = pathMapper(wfq);
         // console.log("this is the final path :: ", finalPath);
@@ -255,7 +232,7 @@ function init() {
                 showlegend: false
             }
         ];
-        var showGrids = false;
+        var showGrids = true;
         var layoutGauge = 
             {
                 shapes:[
@@ -390,7 +367,7 @@ function pathMapper(washFreq) {
     var y = needleRadius * Math.sin(needleRads);
 
     // ============ create needle by using path with Cartisan Coordinates===================
-    var baseNeedlePath = 'M -.0 -0.02 L .0 0.02 L'
+    var baseNeedlePath = 'M -.0 -0.025 L .0 0.025 L'
     var finalPath = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
 
     return finalPath;
