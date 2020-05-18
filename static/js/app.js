@@ -17,6 +17,10 @@ promise.then(data => {
 var demInfoBox = d3.select(".panel-body").append("ul");
 var demInfoBox = d3.select(".panel-body").attr("style", "padding:10px");
 
+var sliceNo = 9;
+
+// specify color to fill both needle and its root circle
+var needleColor = '#610d9e';
 
 function init() {
 
@@ -36,7 +40,6 @@ function init() {
         demInfoBox.html("");
         var demInfo = data.metadata.filter(row => row.id == otuName)[0];
         wfq = demInfo.wfreq;
-        console.log("wash frequency", wfq);
 
         Object.entries(demInfo).forEach(([key, value]) => {
             demInfoBox.append("li").text(`${key} : ${value}`);
@@ -91,7 +94,6 @@ function init() {
         
         // ======================== BUBBLE CHART =======================
         
-        console.log("bubble size = sample values :: ", otuVal);
         // Use sample_values for the y values.
         var traceBble = {
             // Use otu_ids for the x values.
@@ -149,33 +151,37 @@ function init() {
 
         // convert from wash frequency to Cartisan and Polar coordinates
         // find equivalence of wash freq to 1/2  circle =180-deg or PI~3.1416
-        // there are total 9 slices 
-        let wfq3 = 4.5/2;
-        var sliceNo = 9;
-        var needlePos = 180 * wfq3/ 9;    
-        
-        //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to convert to clockwise
-        var needleDeg = 180 - needlePos;
-        var needleRadius = 0.5;
-        var needleRads = needleDeg * Math.PI / 180;
-        
-        // then convert from Polar coordinates back to Cartesian coordinates
-        var x = needleRadius * Math.cos(needleRads);
-        var y = needleRadius * Math.sin(needleRads);
+        // there are total 9 slices
 
-        // ============ create needle by using path with Cartisan Coordinates===================
-        var baseNeedlePath = 'M -.0 -0.02 L .0 0.02 L'
-        var path = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
+
+
+        
+        // var needlePos = 180 * wfq/ sliceNo;    
+        
+        // //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to flip angle back to clockwise
+        // var needleDeg = 180 - needlePos;
+        // var needleRadius = 0.5;
+        // var needleRads = needleDeg * Math.PI / 180;
+
+        // // then convert from Polar coordinates back to Cartesian coordinates
+        // var x = needleRadius * Math.cos(needleRads);         
+        // var y = needleRadius * Math.sin(needleRads);
+
+        // // ============ create needle by using path with Cartisan Coordinates===================
+        // var baseNeedlePath = 'M -.0 -0.02 L .0 0.02 L'
+        // var finalPath = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
         // console.log("this is needle path :: ", path);
 
-        // specify color to fill both needle and its root circle
-        var needleColor = '#610d9e';
+        // getting the path for needle
+        finalPath = pathMapper(wfq);
+        // console.log("this is the final path :: ", finalPath);
+
 
         // specify how many gauge intervals and how much of a "pie" / "circle" is used to make the fan slices
         var pieAreaUsed = 50;  // only 50% is used
         var sliceArea = pieAreaUsed / sliceNo;
 
-        
+        // create trace data for gauge chart
         var traceGauge = [
             {
                 // create needle root (round object) by using scatter plot with a single data point at the origin (0, 0) on Cartisan Coordinates
@@ -187,9 +193,6 @@ function init() {
                     color: needleColor
                 },
                 showlegend: false,
-                name: 'wash / week',
-                text: wfq,
-                hoverinfo: 'text + name'
             },
             {
                 // create all slices of the gauge by pie chart
@@ -204,8 +207,9 @@ function init() {
                     sliceArea,
                     sliceArea,
                     sliceArea,
-                    100 - pieAreaUsed],
-                rotation: 90,
+                    100 - pieAreaUsed
+                ],
+                rotation: 90, // rotate clockwise from 12 o'clock to x-axis for the starting slice
                 text: [
                     '0-1',
                     '1-2',
@@ -232,37 +236,49 @@ function init() {
                             "rgba(186, 61, 41, .5)",
                             "rgba(171, 42, 22, .5)",
                             "rgba(0, 0, 0, 0)",
-0                        ]
+                        ]
                     },
-            // labels: ['151-180', '121-150', '91-120', '61-90', '31-60', '0-30', ''],
-            // hoverinfo: 'label',
-                hole: 0.5,
+                hoverinfo: [
+                    '0-1',
+                    '1-2',
+                    '2-3',
+                    '3-4',
+                    '4-5',
+                    '5-6',
+                    '6-7',
+                    '7-8',
+                    '8-9'
+                ],
+                hole: 0.5, // only 50% of the slices are made blank
                 type: 'pie',
                 direction: "clockwise",
                 showlegend: false
             }
         ];
-
-            var showGrids = true;
-            var layoutGauge = {
-            shapes:[{
-                type: 'path',
-                path: path,
-                fillcolor: needleColor,
-                line: {
-                    color: needleColor
-                }
-                }],
-            title: '<b>Belly Button Washing Frequency</b><br> Scrubs per Week',
-            height: 600,
-            width: 700,
-            xaxis: {zeroline:showGrids, showticklabels:showGrids,
-                        showgrid: showGrids, range: [-1, 1]},
-            yaxis: {zeroline:showGrids, showticklabels:showGrids,
-                        showgrid: showGrids, range: [-1, 1]}
+        var showGrids = false;
+        var layoutGauge = 
+            {
+                shapes:[
+                    {
+                        type: 'path',
+                        path: finalPath,
+                        fillcolor: needleColor,
+                        line: 
+                            {
+                                color: needleColor
+                            }
+                    }
+                ],
+                title: '<b>Belly Button Washing Frequency</b><br> Scrubs per Week',
+                height: 600,
+                width: 700,
+                xaxis: {zeroline:showGrids, showticklabels:showGrids,
+                            showgrid: showGrids, range: [-1, 1]},
+                yaxis: {zeroline:showGrids, showticklabels:showGrids,
+                            showgrid: showGrids, range: [-1, 1]}
             };
 
-        Plotly.newPlot('gauge', traceGauge, layoutGauge, {showSendToCloud:true});
+        Plotly.newPlot('gauge', traceGauge, layoutGauge);
     })
 }
 d3.selectAll("#selDataset").on("change", updatePlotly);
@@ -315,11 +331,10 @@ function updatePlotly () {
 
         // update bar plot
         Plotly.restyle("bar_plot", updateBar);
-        Plotly.relayout("bar_plot", reLayoutBar)
+        Plotly.relayout("bar_plot", reLayoutBar);
 
 
-    // ====================== BUBBLE CHART =====================
-        console.log("bubble size = sample values :: ", otuVal);
+        // ====================== UPDATE BUBBLE CHART =====================
        // specify what needs to be updated
        var updateBble = {
         text : otuText, 
@@ -327,32 +342,59 @@ function updatePlotly () {
         y: [otuVal]   // Use `sample_values` for the y values
         };
 
-    // specify new chart title
-    var reLayoutBble = {
-        title: `Sample Analysis <br> Test Subject ID # <b>${currSubID} </b>`,
-    }; 
+        // specify new chart title
+        var reLayoutBble = {
+            title: `Sample Analysis <br> Test Subject ID # <b>${currSubID} </b>`,
+        }; 
 
-    // update bar plot
-    Plotly.restyle("bubble", updateBble);
-    Plotly.relayout("bubble", reLayoutBble)
+        // update bar plot
+        Plotly.restyle("bubble", updateBble);
+        Plotly.relayout("bubble", reLayoutBble);
     
     
-    // ================== GAUGE CHART =====================
+        // ================== UPDATE GAUGE CHART =====================
+           
+        var layoutGauge = 
+            {
+                shapes:[
+                    {
+                        type: 'path',
+                        path: pathMapper(wfq),
+                        fillcolor: needleColor,
+                        line: 
+                            {
+                                color: needleColor
+                            }
+                    }
+                ],
 
-    var updateGauge = {
-            value: wfq
-            // title: { text: "Scrubs per Week" },
-        };
-    
-    Plotly.restyle("gauge", updateGauge);
-    })  
+                
+            };
+        
+        Plotly.relayout("gauge", layoutGauge);
+    })
 }
 
 
-// Call updatePlotly() when a change takes place to the DOM
-console.info("attempting event handling");
-console.log(d3.select("#selDataset")); 
+var finalPath;
+function pathMapper(washFreq) {
+    var needlePos = 180 * washFreq/ sliceNo;    
+    
+    //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to flip angle back to clockwise
+    var needleDeg = 180 - needlePos;
+    var needleRadius = 0.5;
+    var needleRads = needleDeg * Math.PI / 180;
 
+    // then convert from Polar coordinates back to Cartesian coordinates
+    var x = needleRadius * Math.cos(needleRads);         
+    var y = needleRadius * Math.sin(needleRads);
+
+    // ============ create needle by using path with Cartisan Coordinates===================
+    var baseNeedlePath = 'M -.0 -0.02 L .0 0.02 L'
+    var finalPath = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
+
+    return finalPath;
+}
 
 
 
