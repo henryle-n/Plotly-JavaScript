@@ -130,85 +130,137 @@ function init() {
                 title: {
                     text: "Sample Values"
                 },  
-                showgrid : true,   // major grid lines
+                showgrid: true,   // major grid lines
                 showline: false,    // axis line
                 // rangemode : "tozero"
             }
         };
 
         Plotly.newPlot("bubble", dataBble, layoutBble);  
+        // ====================== GAUGE CHART =====================
+        /*
+            The idea behind the gauge chart is to create 3 plots/ objects stacked on top of each other
+                1. The needle, composed of a triangle (by path method) and a round object = root of the needle (by scatter plot with single data point / chart marker). Position of the needle depends on the wash frequency
 
-        // convert from wash frequency to
-        var needlePos = 180 * wfq / 9;
+                2. Gauge slices by pie chart, composed of slices for each data interval, only half of the pie chart is used
 
-        // Trig to calc meter point
-        var needleDeg = 180 - needlePos,
-            needleRadius = 0.55;
+                3. Inner circle (hole of the same pie chart) to masquerade the blank space from the needle to the bottom of the gauge slices 
+        */
+
+        // convert from wash frequency to Cartisan and Polar coordinates
+        // find equivalence of wash freq to 1/2  circle =180-deg or PI~3.1416
+        // there are total 9 slices 
+        let wfq3 = 4.5/2;
+        var sliceNo = 9;
+        var needlePos = 180 * wfq3/ 9;    
+        
+        //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to convert to clockwise
+        var needleDeg = 180 - needlePos;
+        var needleRadius = 0.5;
         var needleRads = needleDeg * Math.PI / 180;
+        
+        // then convert from Polar coordinates back to Cartesian coordinates
         var x = needleRadius * Math.cos(needleRads);
         var y = needleRadius * Math.sin(needleRads);
 
-        // ============ create needle by using path ===================
+        // ============ create needle by using path with Cartisan Coordinates===================
+        var baseNeedlePath = 'M -.0 -0.02 L .0 0.02 L'
+        var path = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
+        // console.log("this is needle path :: ", path);
+
+        // specify color to fill both needle and its root circle
         var needleColor = '#610d9e';
-        var mainPath = 'M -.0 -0.015 L .0 0.015 L ',
-            pathX = String(x),
-            space = ' ',
-            pathY = String(y),
-            pathEnd = ' Z';
-        var path = mainPath.concat(pathX, space, pathY, pathEnd);
-        console.log("this is path needle :: ", path);
 
+        // specify how many gauge intervals and how much of a "pie" / "circle" is used to make the fan slices
+        var pieAreaUsed = 50;  // only 50% is used
+        var sliceArea = pieAreaUsed / sliceNo;
 
-        // create needle root (round object) by using scatter plot with single data point
-        var traceGauge = [{ type: 'scatter',
-        x: [0], y:[0],
-            marker: {size: 20, color:needleColor},
-            showlegend: false,
-            name: 'wash / week',
-            text: wfq,
-            hoverinfo: 'text+name'},
-        { values: [50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50/9, 50],
-        rotation: 90,
-        text: ['0-1', '1-2', '2-3', '3-4',
-                    '4-5', '5-6', '6-7', '7-8', '8-9'].reverse(),
-        textinfo: 'text',
-        textposition:'inside',	  
-        marker: {colors: [
-            'rgba(171, 42, 22, .5)',
-            'rgba(186, 61, 41, .5)',
-            'rgba(201, 89, 71, .5)',
-            'rgba(212, 115, 100, .5)',
-            'rgba(222, 140, 127, .5)',
-            'rgba(230, 159, 148, .5)',
-            'rgba(245, 190, 182, .5)',
-            'rgba(250, 211, 204, .5)',
-            'rgba(255, 224, 219, 0.5)',
-            'rgba(255, 255, 255, 0)'
-        ]},
-        // labels: ['151-180', '121-150', '91-120', '61-90', '31-60', '0-30', ''],
-        // hoverinfo: 'label',
-        hole: 0.5,
-        type: 'pie',
-        showlegend: false
-        }];
-        var showGrids = true;
-        var layoutGauge = {
-        shapes:[{
-            type: 'path',
-            path: path,
-            fillcolor: needleColor,
-            line: {
-                color: needleColor
+        
+        var traceGauge = [
+            {
+                // create needle root (round object) by using scatter plot with a single data point at the origin (0, 0) on Cartisan Coordinates
+                type: 'scatter',
+                x: [0],
+                y: [0],
+                marker: {
+                    size: 25,  // needle root size
+                    color: needleColor
+                },
+                showlegend: false,
+                name: 'wash / week',
+                text: wfq,
+                hoverinfo: 'text + name'
+            },
+            {
+                // create all slices of the gauge by pie chart
+                values: [
+                    // entire pie chart is 100%, only half is needed, so 50% is used to creat the slices of data interval, the other half is not be used and put to transparent
+                    sliceArea, 
+                    sliceArea, 
+                    sliceArea,
+                    sliceArea,
+                    sliceArea,
+                    sliceArea,
+                    sliceArea,
+                    sliceArea,
+                    sliceArea,
+                    100 - pieAreaUsed],
+                rotation: 90,
+                text: [
+                    '0-1',
+                    '1-2',
+                    '2-3',
+                    '3-4',
+                    '4-5',
+                    '5-6',
+                    '6-7',
+                    '7-8',
+                    '8-9'
+                ],
+                textinfo: 'text',
+                textposition:'inside',	  
+                marker: 
+                    {
+                        colors: [
+                            "rgba(255, 224, 219, 0.5)",
+                            "rgba(250, 211, 204, .5)",
+                            "rgba(245, 190, 182, .5)",
+                            "rgba(230, 159, 148, .5)",
+                            "rgba(222, 140, 127, .5)",
+                            "rgba(212, 115, 100, .5)",
+                            "rgba(201, 89, 71, .5)",
+                            "rgba(186, 61, 41, .5)",
+                            "rgba(171, 42, 22, .5)",
+                            "rgba(0, 0, 0, 0)",
+0                        ]
+                    },
+            // labels: ['151-180', '121-150', '91-120', '61-90', '31-60', '0-30', ''],
+            // hoverinfo: 'label',
+                hole: 0.5,
+                type: 'pie',
+                direction: "clockwise",
+                showlegend: false
             }
-            }],
-        title: '<b>Belly Button Washing Frequency</b><br> Scrubs per Week',
-        height: 600,
-        width: 700,
-        xaxis: {zeroline:showGrids, showticklabels:showGrids,
-                    showgrid: showGrids, range: [-1, 1]},
-        yaxis: {zeroline:showGrids, showticklabels:showGrids,
-                    showgrid: showGrids, range: [-1, 1]}
-        };
+        ];
+
+            var showGrids = true;
+            var layoutGauge = {
+            shapes:[{
+                type: 'path',
+                path: path,
+                fillcolor: needleColor,
+                line: {
+                    color: needleColor
+                }
+                }],
+            title: '<b>Belly Button Washing Frequency</b><br> Scrubs per Week',
+            height: 600,
+            width: 700,
+            xaxis: {zeroline:showGrids, showticklabels:showGrids,
+                        showgrid: showGrids, range: [-1, 1]},
+            yaxis: {zeroline:showGrids, showticklabels:showGrids,
+                        showgrid: showGrids, range: [-1, 1]}
+            };
 
         Plotly.newPlot('gauge', traceGauge, layoutGauge, {showSendToCloud:true});
     })
