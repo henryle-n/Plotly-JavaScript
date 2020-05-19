@@ -232,7 +232,7 @@ function init() {
                 showlegend: false
             }
         ];
-        var showGrids = true;
+        var showGrids = false;
         var layoutGauge = 
             {
                 shapes:[
@@ -353,23 +353,44 @@ function updatePlotly () {
 }
 
 
+// var finalPath is the string of coordinates for the marker to move and make the contour of the needle triangle
 var finalPath;
 function pathMapper(washFreq) {
-    var needlePos = 180 * washFreq/ sliceNo;    
     
-    //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to flip angle back to clockwise
-    var needleDeg = 180 - needlePos;
+    //specify size of the needle which is a triangle with height (radius in polar coord) and base
     var needleRadius = 0.5;
-    var needleRads = needleDeg * Math.PI / 180;
+    var needleBaseSize = 0.04;
+    
+    //  since zero postiion in polar coordinates start from "postitive x-axis and goes counter-clockwise, need to find supplementary angles, /
+    //beta = 180deg - alpha
+    var needlePos = 180 * washFreq/ sliceNo;  
+    var needleDeg = 180 - needlePos;
 
-    // then convert from Polar coordinates back to Cartesian coordinates
-    var x = needleRadius * Math.cos(needleRads);         
-    var y = needleRadius * Math.sin(needleRads);
+    // First, find the tip of the needle coordinates, call xTip and yTip
+    // then convert from Polar coordinates back to Cartesian coordinates because the Math.* lib accepts angle in radian, not degree
+    var needleRads = needleDeg * Math.PI / 180;
+    var xTip = needleRadius * Math.cos(needleRads);         
+    var yTip = needleRadius * Math.sin(needleRads);
+
+    /*
+    Second, find the 2 points of the needle base coordinates, call (xBase1, yBase1) & (xBase2, yBase2)
+    P1 and P2 are symetric via origin zero, therefore :
+        xBase1 = - xBase2
+        yBase1 = - yBase2
+    then convert from Polar coordinates back to Cartesian coordinates
+    In this particular design, xBase1 = [0, +x], yBase1 = [0, +x]
+    */
+    
+    xBase1 = needleBaseSize / 2 * Math.cos((needleDeg - 90) * Math.PI / 180);
+    yBase1 = needleBaseSize / 2 * Math.sin((needleDeg - 90) * Math.PI / 180);
+    xBase2 = -xBase1;
+    yBase2 = -yBase1;
+
 
     // ============ create needle by using path with Cartisan Coordinates===================
-    var baseNeedlePath = 'M -.0 -0.025 L .0 0.025 L'
-    var finalPath = baseNeedlePath.concat(" ", String(x), " ", String(y), ' Z');
-
+    // var baseNeedlePath = 'M -.0 -0.025 L .0 0.025 L'
+    // var finalPath = baseNeedlePath.concat(" ", String(xTip), " ", String(yTip), ' Z');
+    var finalPath = `M ${xBase1} ${yBase1} L ${xTip} ${yTip} L ${xBase2} ${yBase2} Z`;
     return finalPath;
 }
 
