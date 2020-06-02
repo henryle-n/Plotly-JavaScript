@@ -9,13 +9,15 @@ In recent research project from the Dept. of Applied Ecology of the North Caroli
 This Data Anylitics and Visualization project utilizing 3 different chart types: horizontal bar, bubble, and gauge charts of the **Plotly.js** library to shed lights on several questions:  
 
 <ol>
+    <li>Demographic Info of the sample donors.</li>
     <li>What are the top 10 microbial species (OTUs) found in each sample?</li>
-    <li></li>
-    <li></li>
-    <li></li>
+    <li>What are the names of bacteria found in each OTU?</li>
+    <li>How many times a week does each sample donor wash their belly button?</li>
 </ol>
 
-
+<hr>
+![amazing diversity of cultured bacteria](static/img/readmePic.jpg)
+<hr>
 
 
 
