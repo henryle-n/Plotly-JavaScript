@@ -15,18 +15,18 @@ This Data Anylitics and Visualization project utilizing 3 different chart types:
     <li>How many times a week does each sample donor wash their belly button?</li>
 </ol>
 
-![amazing diversity of cultured bacteria](static/img/readmePic.jpg)  
-
+<div align="center">
+    <img src="static/img/readmePic.jpg" alt="amazing diversity of cultured bacteria" width="600" height="390" style="border:1px solid #DDDDDD; padding:20px">
+</div>
 
 ## Tools/ Techniques/ Technologies
+* HTML-5 | CSS-3 | Plotly | JavaScript/ ES-6 | D3.js | Bootstrap-4 | DOM | Markdown
+* Visual Studio Code Insiders | Live Server (*by R. Dey*) | Instant Markdown (*by D. Bankier*) | Google Chrome ver. 84x
+* MacOS Mojave | Windows 10 Pro, ver. 1909 OS Build 18363.778
 
-
-What and how many species live in the belly button?
-Why are some species common in many belly buttons and (most) others are rare?
-What factors determine the number and kinds of microbes we see in individual belly buttons?
- 
- will help answer the questions
-Visualization for Webpage using Plotly in JavaScript
-
-In this assignment, you will build an interactive dashboard to explore the Belly Button Biodiversity dataset, which catalogs the microbes that colonize human navels.
-The dataset reveals that a small handful of microbial species (also called operational taxonomic units, or OTUs, in the study) were present in more than 70% of people, while the rest were relatively rare.
+## Table of Contents
+The main directory consists of 3 folders:
+* **InDev** :: files for future development
+* **UFO-level-1** :: contains apps and scripts of single filter (by '*Date*')
+* **UFO-level-2.A** :: contains apps and scripts of multiple filters
+* **UFO-level-2.B** :: improved version of JS, everything else is same as *2.A*
