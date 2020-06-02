@@ -1,10 +1,22 @@
 # Life on Us!  
 
-Human eyes can only see what they can see. Truth is they can't see the microbes ... Thanks to the modern hi-tech microscope with high resolution and manifying capability, now we can see the worlds that we couldn't see before - the worlds of different microbes that live on our body. To them, our body is their earth as the earth to human race.  
+## Background
 
-In recent research project from the Dept. of Applied Ecology of the North Carolina University, the scientists collected human belly button samples and develop a database of multiple species of microbes that live in that small part of our body.  
+Human eyes can only see what they can see. The smallest visible object to them is just around 0.1mm (or ~ $\frac{1}{213}$in). Truth is they can't see the microbes ... Thanks to the modern hi-tech microscope with high resolution and manifying capability, now we can see the worlds that we couldn't see before - the worlds of different microbes that live on our body. To them, our body is their earth as the earth to human race.  
 
-* This visualization project utilizing 3 different chart types: horizontal bar, bubble, and gauge charts to shed a light on several questions?
+In recent research project from the Dept. of Applied Ecology of the North Carolina University, the scientists collected human belly button samples and develop a database that catalogs the microbes colonizing human navels. The dataset reveals that a small handful of microbial species (aka "**Operational Taxonomic Units**", or "**OTUs**", in the study) were present in more than 70% of people, while the rest were relatively rare.
+
+This Data Anylitics and Visualization project utilizing 3 different chart types: horizontal bar, bubble, and gauge charts of the **Plotly.js** library to shed lights on several questions:  
+
+<ol>
+    <li>What are the top 10 microbial species (OTUs) found in each sample?</li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ol>
+
+
+
 
 
 
