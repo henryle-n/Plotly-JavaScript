@@ -16,7 +16,7 @@ This Data Anylitics and Visualization project utilizing 3 different chart types:
 </ol>
 <br>
 <div align="center">
-    <img src="static/img/readmePic.jpg" alt="amazing diversity of cultured bacteria" width="600" height="390" style="border:1px solid #DDDDDD; padding:20px">
+    <img src="static/img/readmePic.jpg" alt="amazing diversity of cultured bacteria" width="600" height="390" style="border:1px solid black; padding:20px">
     <p><b>Amazing diversity of cultured bacteria</b><br>(<em>Courtesy of North Carolina State University - Dept. of Ecology)</em></p>
 </div>
 
