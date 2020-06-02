@@ -2,14 +2,14 @@
 
 ## Background
 
-Human eyes can only see what they can see. The smallest visible object to them is just around 0.1mm (or ~ $\frac{1}{213}$in). Truth is they can't see the microbes ... Thanks to the modern hi-tech microscope with high resolution and manifying capability, now we can see the worlds that we couldn't see before - the worlds of different microbes that live on our body. To them, our body is their earth as the earth to human race.  
+Human eyes can see what they can only see. The smallest visible object to them is just around 0.1mm (or ~ $\frac{1}{213}$in). Truth is they can't see the microbes ... Thanks to the modern hi-tech microscope with high resolution and manifying capability, now we can see the worlds that we couldn't see before - the worlds of different microbes that live on our body. To them, our body is their earth as the earth to human race.  
 
 In recent research project from the Dept. of Applied Ecology of the North Carolina University, the scientists collected human belly button samples and develop a database that catalogs the microbes colonizing human navels. The dataset reveals a small handful of microbial species knowns as "**Operational Taxonomic Units**", or "**OTUs**".
 
 This Data Anylitics and Visualization project utilizing 3 different chart types: horizontal bar, bubble, and gauge charts of the **Plotly.js** library to shed lights on several questions:  
 
 <ol>
-    <li>Demographic Info of the sample donors.</li>
+    <li>Demographic Info of each sample donor.</li>
     <li>What are the top 10 microbial species (OTUs) found in each sample?</li>
     <li>What are the names of bacteria found in each OTU?</li>
     <li>How many times a week does each sample donor wash their belly button?</li>
@@ -26,7 +26,17 @@ This Data Anylitics and Visualization project utilizing 3 different chart types:
 
 ## Table of Contents
 The main directory consists of 3 folders:
-* **InDev** :: files for future development
-* **UFO-level-1** :: contains apps and scripts of single filter (by '*Date*')
-* **UFO-level-2.A** :: contains apps and scripts of multiple filters
-* **UFO-level-2.B** :: improved version of JS, everything else is same as *2.A*
+* **data** :: contains this project data - *samples.json*
+* **static** :: contains style.css, app.js, and Readme Picture
+* **index.html** :: front-end html for rendering the webpage
+
+
+## Features  
+* Contains a drop-down box to allow user to choose different sample donor ID
+* Upon choosing an ID, all 3 graphs will change to show visualization of that donor
+* Gauge chart is built based on Plotly.js Pie Chart methodology in conjunction with "path" mapping to create the pointing needle
+
+## Summary
+* Working on this project taught me how to use D3, DOM to drive the HTML, making more user interactive, thus enhanced user experience
+* Creating the gauge chart was probably the most challenging part as this chart required lots of parameters, trigonometry calculations, Polar-Cartesian Coordinate Conversion, etc. It's comprised of multiple layers of graphic designs
+* Due to the complexity of using JS to drive HTML, lots of problems related to **Asynchronous**, **D3 Promise** emerged, troubleshot and solved to make the final product  
