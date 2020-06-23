@@ -23,7 +23,7 @@ This Data Anylitics and Visualization project utilizing 3 different chart types:
 ## Tools/ Techniques/ Technologies
 * HTML-5 | CSS-3 | Plotly | JavaScript/ ES-6 | D3.js | Bootstrap-4 | DOM | Markdown
 * Visual Studio Code Insiders | Live Server (*by R. Dey*) | Instant Markdown (*by D. Bankier*) | Google Chrome ver. 84x
-* MacOS Mojave | Windows 10 Pro, ver. 1909 OS Build 18363.778
+* MacOS Mojave 10.14.6 | Windows 10 Pro, ver. 1909 OS Build 18363.778
 
 ## Table of Contents
 * **data** :: contains this project data - *samples.json*
